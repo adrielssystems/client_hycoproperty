@@ -3,7 +3,7 @@
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTenantAuth } from '@/context/TenantAuthContext';
-import { Building2, Shield, LogOut } from 'lucide-react';
+import { Building2, LogOut } from 'lucide-react';
 
 interface HeaderProps {
   activeTab: string;
@@ -53,14 +53,8 @@ export const Header: React.FC<HeaderProps> = ({ activeTab }) => {
             <span className="text-xs uppercase tracking-wider text-[#D4AF37] font-semibold">
               {t('app.title')}
             </span>
-            <h1 className="text-base lg:text-lg font-bold text-white tracking-tight flex items-center gap-2">
+            <h1 className="text-base lg:text-lg font-bold text-white tracking-tight">
               {getSectionTitle()}
-              {activeTab === 'surveillance' && (
-                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                  HIKVISION LIVE
-                </span>
-              )}
             </h1>
           </div>
         </div>
@@ -104,16 +98,6 @@ export const Header: React.FC<HeaderProps> = ({ activeTab }) => {
               ES
             </button>
           </div>
-
-          {/* Emergency Security Direct Call */}
-          <a
-            href="tel:3176750041"
-            title="(317) 675-0041"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 hover:bg-rose-500/25 transition-all text-xs font-semibold"
-          >
-            <Shield className="w-3.5 h-3.5 text-rose-400" />
-            <span className="hidden sm:inline">24/7 Security</span>
-          </a>
 
           {/* Logout Button */}
           <button

@@ -52,16 +52,6 @@ export const BillingView: React.FC = () => {
           <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
             {t('billing.title')}
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400">
-            {t('billing.subtitle')}
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="px-3 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>QuickBooks Online Sync: 100% OK</span>
-          </span>
         </div>
       </div>
 

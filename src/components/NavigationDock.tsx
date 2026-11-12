@@ -176,3 +176,4 @@ export const NavigationDock: React.FC<NavigationDockProps> = ({ activeTab, onTab
     </>
   );
 };
+

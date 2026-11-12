@@ -29,9 +29,6 @@ export const AnnouncementsView: React.FC = () => {
         <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
           {t('announcements.title')}
         </h2>
-        <p className="text-xs sm:text-sm text-slate-400">
-          {t('announcements.subtitle')}
-        </p>
       </div>
 
       {/* Announcements List */}
@@ -79,3 +76,4 @@ export const AnnouncementsView: React.FC = () => {
     </div>
   );
 };
+

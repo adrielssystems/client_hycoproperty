@@ -9,8 +9,6 @@ import {
   Camera,
   Maximize2,
   RefreshCw,
-  PhoneCall,
-  Info,
   CheckCircle2,
   Radio,
 } from 'lucide-react';
@@ -24,7 +22,6 @@ export const SurveillanceView: React.FC = () => {
   const [isNightVision, setIsNightVision] = useState(false);
   const [isLive, setIsLive] = useState(true);
   const [currentTime, setCurrentTime] = useState('');
-  const [showInfoModal, setShowInfoModal] = useState(false);
   const [snapshotToast, setSnapshotToast] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerContainerRef = useRef<HTMLDivElement>(null);
@@ -119,28 +116,6 @@ export const SurveillanceView: React.FC = () => {
           <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
             {t('cctv.title')}
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400">
-            {t('cctv.subtitle')}
-          </p>
-        </div>
-
-        {/* Action Controls */}
-        <div className="flex items-center gap-2.5">
-          <button
-            onClick={() => setShowInfoModal(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] border border-white/10 text-xs font-semibold text-slate-300 transition-all"
-          >
-            <Info className="w-3.5 h-3.5 text-[#D4AF37]" />
-            <span className="hidden sm:inline">{t('cctv.integration_info')}</span>
-          </button>
-
-          <a
-            href="tel:3176750041"
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 text-xs font-bold transition-all shadow-sm"
-          >
-            <PhoneCall className="w-3.5 h-3.5" />
-            <span>(317) 675-0041</span>
-          </a>
         </div>
       </div>
 
@@ -334,79 +309,7 @@ export const SurveillanceView: React.FC = () => {
             })}
           </div>
         </div>
-
-        {/* Privacy Notice Disclaimer */}
-        <div className="mt-5 p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.08] flex items-start gap-3">
-          <Shield className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" />
-          <div className="text-xs text-slate-400 leading-relaxed">
-            <span className="font-semibold text-slate-300">{t('cctv.privacy_notice')}</span>
-          </div>
-        </div>
       </div>
-
-      {/* Integration Info Modal */}
-      {showInfoModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <div className="glass-card max-w-lg w-full p-6 sm:p-8 rounded-3xl border border-white/15 shadow-2xl relative">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <Shield className="w-5 h-5 text-[#D4AF37]" />
-                <h3 className="text-base sm:text-lg font-bold text-white">
-                  Hikvision & Hik-Connect OpenAPI Architecture
-                </h3>
-              </div>
-              <button
-                onClick={() => setShowInfoModal(false)}
-                className="text-slate-400 hover:text-white p-1"
-              >
-                ✕
-              </button>
-            </div>
-
-            <p className="text-xs text-slate-300 leading-relaxed mb-4">
-              {t('cctv.integration_desc')}
-            </p>
-
-            <div className="space-y-2.5 text-xs">
-              <div className="p-3 rounded-xl bg-white/[0.04] border border-white/10">
-                <span className="font-bold text-[#D4AF37] block mb-0.5">
-                  1. Zero Port-Forwarding Exposure
-                </span>
-                <span className="text-slate-400">
-                  Streams are tunneled through Hik-Connect Cloud P2P via encrypted TLS connections. No local NVR ports (8000, 554) are opened to the public internet.
-                </span>
-              </div>
-
-              <div className="p-3 rounded-xl bg-white/[0.04] border border-white/10">
-                <span className="font-bold text-[#D4AF37] block mb-0.5">
-                  2. Tenant-Scoped Access Tokens
-                </span>
-                <span className="text-slate-400">
-                  Temporary, ephemeral HLS / WebRTC access tokens are signed on demand by HYCO&apos;s backend based on the tenant&apos;s authenticated lease property ID.
-                </span>
-              </div>
-
-              <div className="p-3 rounded-xl bg-white/[0.04] border border-white/10">
-                <span className="font-bold text-[#D4AF37] block mb-0.5">
-                  3. Sub-Stream Mobile Optimization
-                </span>
-                <span className="text-slate-400">
-                  720p/1080p H.264 video encoding configured at 15-20 FPS ensures instant start times on cellular networks without buffering.
-                </span>
-              </div>
-            </div>
-
-            <div className="mt-6 flex justify-end">
-              <button
-                onClick={() => setShowInfoModal(false)}
-                className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B89222] text-[#070D18] font-bold text-xs"
-              >
-                {t('common.close')}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

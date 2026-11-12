@@ -27,9 +27,6 @@ export const LeaseView: React.FC = () => {
           <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
             {t('lease.title')}
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400">
-            {t('lease.subtitle')}
-          </p>
         </div>
 
         <button

@@ -96,9 +96,6 @@ export const MaintenanceView: React.FC = () => {
           <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
             {t('maintenance.title')}
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400">
-            {t('maintenance.subtitle')}
-          </p>
         </div>
 
         <button
