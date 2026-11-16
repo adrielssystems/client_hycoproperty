@@ -60,6 +60,7 @@ export interface TenantProfile {
   companyName: string;
   contactName: string;
   email: string;
+  password?: string;
   phone: string;
   propertyId: number;
   propertyName: string;
@@ -112,11 +113,64 @@ interface TenantAuthContextType {
 // Default Indianapolis Tenant Accounts
 export const DEMO_TENANTS: TenantProfile[] = [
   {
+    id: 'tenant-test',
+    accountCode: 'ACCT-TEST',
+    companyName: 'HYCO Client Test Account',
+    contactName: 'Test Client',
+    email: 'testclient@gmail.com',
+    password: 'Admin123$',
+    phone: '(317) 675-0041',
+    propertyId: 1,
+    propertyName: '7898 Zionsville Rd Commercial Center',
+    propertyAddress: '7898 Zionsville Rd, Indianapolis, IN 46268',
+    suiteNumber: 'Suite 200',
+    suiteType: 'Commercial Corporate Office',
+    areaSqft: 2400,
+    monthlyRent: 3600.0,
+    camFee: 320.0,
+    leaseStart: '2025-01-01',
+    leaseEnd: '2028-12-31',
+    securityDeposit: 7200.0,
+    balance: 0.0,
+    nextDueDate: '2027-03-01',
+    cameras: [
+      {
+        id: 'cam-zionsville-01',
+        name: {
+          en: 'CAM 01 — Main Entrance & North Parking',
+          es: 'CAM 01 — Acceso Principal y Estacionamiento Norte',
+        },
+        location: 'Building Exterior North Gate',
+        channel: 1,
+        status: 'ONLINE',
+        resolution: '1080p Full HD',
+        fps: 20,
+        ipPlaceholder: '192.168.10.101',
+        sampleVideo: 'https://assets.mixkit.co/videos/preview/mixkit-top-view-of-cars-on-a-highway-42898-large.mp4',
+      },
+      {
+        id: 'cam-zionsville-02',
+        name: {
+          en: 'CAM 02 — Loading Dock & West Perimeter',
+          es: 'CAM 02 — Muelle de Carga y Perímetro Oeste',
+        },
+        location: 'Loading Bay Area',
+        channel: 2,
+        status: 'ONLINE',
+        resolution: '1080p Full HD',
+        fps: 20,
+        ipPlaceholder: '192.168.10.102',
+        sampleVideo: 'https://assets.mixkit.co/videos/preview/mixkit-security-camera-view-of-a-street-at-night-42899-large.mp4',
+      },
+    ],
+  },
+  {
     id: 'tenant-1042',
     accountCode: 'ACCT-1042',
     companyName: 'Circle City Tech Labs Inc.',
     contactName: 'Sarah Jenkins (VP of Infrastructure)',
     email: 'tech@circlecitylabs.com',
+    password: 'Admin123$',
     phone: '(317) 555-0192',
     propertyId: 1,
     propertyName: '7898 Zionsville Rd Commercial Center',
@@ -480,20 +534,20 @@ const INITIAL_ANNOUNCEMENTS: BuildingAnnouncement[] = [
 const TenantAuthContext = createContext<TenantAuthContextType | null>(null);
 
 export function TenantAuthProvider({ children }: { children: ReactNode }) {
-  // Default to Circle City Tech Labs or restore stored session lazily
+  // Never auto-login: require explicit authentication unless valid session exists in localStorage
   const [tenant, setTenant] = useState<TenantProfile | null>(() => {
     if (typeof window !== 'undefined') {
       try {
         const stored = localStorage.getItem('hyco_client_tenant_id');
         if (stored) {
-          const found = DEMO_TENANTS.find((t) => t.id === stored || t.accountCode === stored);
+          const found = DEMO_TENANTS.find((t) => t.id === stored || t.accountCode === stored || t.email.toLowerCase() === stored.toLowerCase());
           if (found) return found;
         }
       } catch {
         // Fallback
       }
     }
-    return DEMO_TENANTS[0];
+    return null;
   });
 
   const [invoices, setInvoices] = useState<TenantInvoice[]>(INITIAL_INVOICES);
@@ -501,40 +555,36 @@ export function TenantAuthProvider({ children }: { children: ReactNode }) {
   const [announcements] = useState<BuildingAnnouncement[]>(INITIAL_ANNOUNCEMENTS);
   const [lastReceipt, setLastReceipt] = useState<PaymentReceipt | null>(null);
 
-  const login = (accountOrEmail: string): boolean => {
-    const clean = accountOrEmail.trim().toLowerCase();
+  const login = (accountOrEmail: string, pass?: string): boolean => {
+    const cleanEmail = accountOrEmail.trim().toLowerCase();
+    const cleanPass = pass?.trim() || '';
+
+    if (!cleanEmail || !cleanPass) {
+      return false;
+    }
+
     const found = DEMO_TENANTS.find(
       (t) =>
-        t.accountCode.toLowerCase() === clean ||
-        t.email.toLowerCase() === clean ||
-        t.companyName.toLowerCase().includes(clean)
+        t.email.toLowerCase() === cleanEmail ||
+        t.accountCode.toLowerCase() === cleanEmail
     );
 
-    if (found) {
-      setTenant(found);
-      try {
-        localStorage.setItem('hyco_client_tenant_id', found.id);
-      } catch {
-        // Fallback
-      }
-      return true;
+    if (!found) {
+      return false;
     }
 
-    if (clean.length > 0) {
-      const fallback = DEMO_TENANTS[0];
-      setTenant({
-        ...fallback,
-        email: clean.includes('@') ? clean : fallback.email,
-      });
-      try {
-        localStorage.setItem('hyco_client_tenant_id', fallback.id);
-      } catch {
-        // Fallback
-      }
-      return true;
+    const expectedPassword = found.password || 'Admin123$';
+    if (cleanPass !== expectedPassword) {
+      return false;
     }
 
-    return false;
+    setTenant(found);
+    try {
+      localStorage.setItem('hyco_client_tenant_id', found.id);
+    } catch {
+      // Fallback
+    }
+    return true;
   };
 
   const loginAsDemo = (accountCode: string) => {

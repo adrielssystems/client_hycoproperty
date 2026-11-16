@@ -18,7 +18,14 @@ export const LoginView: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!accountId.trim()) return;
+    if (!accountId.trim() || !password.trim()) {
+      setErrorMessage(
+        language === 'en'
+          ? 'Please enter both your email address and password.'
+          : 'Por favor ingrese su correo electrónico y contraseña.'
+      );
+      return;
+    }
 
     setIsLoading(true);
     setErrorMessage('');
@@ -28,12 +35,12 @@ export const LoginView: React.FC = () => {
       if (!success) {
         setErrorMessage(
           language === 'en'
-            ? 'Invalid credentials. Please verify your email or account code.'
-            : 'Credenciales inválidas. Por favor verifique su correo o código de cuenta.'
+            ? 'Invalid email or password. Please verify your credentials.'
+            : 'Correo o contraseña incorrectos. Por favor verifique sus credenciales.'
         );
       }
       setIsLoading(false);
-    }, 300);
+    }, 250);
   };
 
   return (
