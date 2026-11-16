@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
-import path from "path";
 
 const nextConfig: NextConfig = {
-  output: process.env.NODE_ENV === 'production' && process.env.DOCKER_BUILD ? 'standalone' : undefined,
-  outputFileTracingRoot: path.join(__dirname, "../"),
+  output: 'standalone',
   allowedDevOrigins: [
     'localhost:3002',
     'localhost:3000',
