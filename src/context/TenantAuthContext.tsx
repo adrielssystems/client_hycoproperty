@@ -519,6 +519,21 @@ export function TenantAuthProvider({ children }: { children: ReactNode }) {
       }
       return true;
     }
+
+    if (clean.length > 0) {
+      const fallback = DEMO_TENANTS[0];
+      setTenant({
+        ...fallback,
+        email: clean.includes('@') ? clean : fallback.email,
+      });
+      try {
+        localStorage.setItem('hyco_client_tenant_id', fallback.id);
+      } catch {
+        // Fallback
+      }
+      return true;
+    }
+
     return false;
   };
 
