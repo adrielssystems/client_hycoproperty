@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
     '127.0.0.1:3002',
     '192.168.31.171',
     '192.168.31.171:3002',
+    'client.hycopropertymanagement.com',
   ],
   cacheComponents: true,
   partialPrefetching: true,
