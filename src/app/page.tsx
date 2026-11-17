@@ -6,7 +6,6 @@ import { Header } from '@/components/Header';
 import { NavigationDock } from '@/components/NavigationDock';
 import { LoginView } from '@/components/views/LoginView';
 import { OverviewView } from '@/components/views/OverviewView';
-import { SurveillanceView } from '@/components/views/SurveillanceView';
 import { BillingView } from '@/components/views/BillingView';
 import { MaintenanceView } from '@/components/views/MaintenanceView';
 import { AnnouncementsView } from '@/components/views/AnnouncementsView';
@@ -27,8 +26,6 @@ export default function TenantPortalHome() {
     switch (activeTab) {
       case 'overview':
         return <OverviewView onNavigate={setActiveTab} />;
-      case 'surveillance':
-        return <SurveillanceView />;
       case 'billing':
         return <BillingView />;
       case 'maintenance':

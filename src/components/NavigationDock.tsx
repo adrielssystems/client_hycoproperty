@@ -5,7 +5,6 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useTenantAuth } from '@/context/TenantAuthContext';
 import {
   LayoutDashboard,
-  Video,
   CreditCard,
   Wrench,
   Megaphone,
@@ -29,13 +28,6 @@ export const NavigationDock: React.FC<NavigationDockProps> = ({ activeTab, onTab
       label: t('nav.overview'),
       icon: LayoutDashboard,
       badge: null,
-    },
-    {
-      id: 'surveillance',
-      label: t('nav.surveillance'),
-      icon: Video,
-      badge: 'LIVE',
-      isLive: true,
     },
     {
       id: 'billing',
@@ -96,16 +88,8 @@ export const NavigationDock: React.FC<NavigationDockProps> = ({ activeTab, onTab
                 >
                   <Icon className="w-5 h-5" />
 
-                  {/* Pulsing indicator for CCTV Live */}
-                  {item.isLive && !isActive && (
-                    <span className="absolute top-1.5 right-1.5 flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-                    </span>
-                  )}
-
                   {/* Badge */}
-                  {item.badge && !item.isLive && (
+                  {item.badge && (
                     <span
                       className={`absolute -top-1 -right-1 px-1 py-0.2 text-[9px] font-extrabold rounded-full ${
                         item.badgeColor === 'rose'
@@ -121,9 +105,6 @@ export const NavigationDock: React.FC<NavigationDockProps> = ({ activeTab, onTab
                 {/* Floating Tooltip */}
                 <div className="absolute left-18 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50 whitespace-nowrap px-3 py-1.5 rounded-xl bg-[#0B1526] border border-white/10 text-white text-xs font-semibold shadow-xl">
                   {item.label}
-                  {item.isLive && (
-                    <span className="ml-2 text-[10px] text-emerald-400 font-bold">• LIVE</span>
-                  )}
                 </div>
               </div>
             );
@@ -165,10 +146,6 @@ export const NavigationDock: React.FC<NavigationDockProps> = ({ activeTab, onTab
               <span className="text-[10px] font-medium tracking-tighter truncate max-w-[50px] mt-0.5">
                 {item.label.split(' ')[0]}
               </span>
-
-              {item.isLive && !isActive && (
-                <span className="absolute top-1 right-2 w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              )}
             </button>
           );
         })}

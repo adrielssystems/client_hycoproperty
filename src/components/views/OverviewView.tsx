@@ -5,7 +5,8 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useTenantAuth } from '@/context/TenantAuthContext';
 import {
   Building2,
-  Video,
+  FileText,
+  Calendar,
   Wrench,
   Megaphone,
   ArrowRight,
@@ -24,7 +25,13 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ onNavigate }) => {
 
   const activeTickets = tickets.filter((tck) => tck.status !== 'RESOLVED');
   const latestAnnouncement = announcements[0];
-  const primaryCam = tenant?.cameras[0];
+
+  const daysRemaining = React.useMemo(() => {
+    if (!tenant?.leaseEnd) return null;
+    const end = new Date(tenant.leaseEnd);
+    const now = new Date();
+    return Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  }, [tenant?.leaseEnd]);
 
   return (
     <div className="space-y-6">
@@ -77,70 +84,84 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ onNavigate }) => {
         </div>
       </div>
 
-      {/* 2-Column Grid: Live CCTV Mini-Widget & Quick Actions */}
+      {/* 2-Column Grid: Lease & Suite Summary & Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Live CCTV Mini-Widget */}
+        {/* Lease & Suite Summary Card */}
         <div className="glass-card p-5 sm:p-6 rounded-3xl border border-white/10 flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                <Video className="w-4 h-4" />
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2.5 rounded-xl bg-[#D4AF37]/15 text-[#F3D270] border border-[#D4AF37]/30">
+                <FileText className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <span>{t('overview.cctv_quick')}</span>
-                  <span className="px-2 py-0.2 rounded-full text-[9px] font-extrabold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                    HIK-CONNECT
-                  </span>
+                <h3 className="text-sm font-bold text-white">
+                  {language === 'en' ? 'Active Lease & Suite Summary' : 'Resumen de Contrato y Suite'}
                 </h3>
-                <span className="text-[10px] text-slate-400">
-                  {primaryCam?.name[language]}
+                <span className="text-[11px] text-white/60">
+                  {tenant?.propertyName} • {tenant?.suiteNumber}
                 </span>
               </div>
             </div>
 
             <button
-              onClick={() => onNavigate('surveillance')}
-              className="text-xs text-[#D4AF37] hover:underline font-semibold flex items-center gap-1"
+              onClick={() => onNavigate('lease')}
+              className="text-xs text-[#F3D270] hover:underline font-semibold flex items-center gap-1 cursor-pointer"
             >
-              <span>{t('overview.view_all_cams')}</span>
+              <span>{language === 'en' ? 'View Lease' : 'Ver Contrato'}</span>
               <ArrowRight className="w-3 h-3" />
             </button>
           </div>
 
-          {/* Mini Video Feed Preview */}
-          <div
-            onClick={() => onNavigate('surveillance')}
-            className="relative w-full aspect-video rounded-2xl overflow-hidden bg-black border border-white/10 cursor-pointer group shadow-lg"
-          >
-            <video
-              src={primaryCam?.sampleVideo}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover opacity-85 group-hover:scale-105 transition-all duration-300"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 pointer-events-none" />
-
-            <div className="absolute top-3 left-3 flex items-center gap-1.5">
-              <span className="px-2 py-0.5 rounded bg-rose-600 text-white font-mono font-bold text-[9px]">
-                REC ●
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-white/50 block mb-1">
+                {language === 'en' ? 'Base Rent' : 'Renta Base'}
               </span>
-              <span className="px-2 py-0.5 rounded bg-black/60 text-white font-mono text-[9px]">
-                CH 01 • 1080p
+              <span className="text-base font-bold text-white font-mono">
+                ${(tenant?.monthlyRent || 0).toLocaleString()}
               </span>
+              <span className="text-[10px] text-white/40 ml-1">/mo</span>
             </div>
-
-            <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
-              <span className="font-semibold text-[11px] truncate">
-                {primaryCam?.name[language]}
+            <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-white/50 block mb-1">
+                {language === 'en' ? 'CAM Monthly Fee' : 'Cuota CAM'}
               </span>
-              <span className="px-2 py-0.5 rounded-lg bg-[#D4AF37] text-[#070D18] font-bold text-[10px] shadow-sm">
-                Live View
+              <span className="text-base font-bold text-[#F3D270] font-mono">
+                ${(tenant?.camFee || 0).toLocaleString()}
               </span>
+              <span className="text-[10px] text-white/40 ml-1">/mo</span>
             </div>
+          </div>
+
+          <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <Calendar className="w-4 h-4 text-[#F3D270]" />
+              <div>
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-white/50 block">
+                  {language === 'en' ? 'Lease Expiration' : 'Vencimiento del Contrato'}
+                </span>
+                <span className="text-xs font-bold text-white font-mono">
+                  {tenant?.leaseStart} → {tenant?.leaseEnd}
+                </span>
+              </div>
+            </div>
+            {daysRemaining !== null && (
+              <span
+                className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
+                  daysRemaining > 90
+                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                    : daysRemaining > 30
+                    ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                    : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
+                }`}
+              >
+                {daysRemaining > 0
+                  ? `${daysRemaining} ${language === 'en' ? 'days left' : 'días restantes'}`
+                  : language === 'en'
+                  ? 'Expired'
+                  : 'Vencido'}
+              </span>
+            )}
           </div>
         </div>
 
