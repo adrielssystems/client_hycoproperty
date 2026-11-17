@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { TenantAuthProvider } from '@/context/TenantAuthContext';
+import { ToastProvider } from '@/context/ToastContext';
 
 export const viewport: Viewport = {
   themeColor: '#070D18',
@@ -46,7 +47,9 @@ export default function RootLayout({
       <body className="bg-[#070D18] text-[#F8FAFC] antialiased selection:bg-[#D4AF37]/30 selection:text-white">
         <LanguageProvider>
           <TenantAuthProvider>
-            {children}
+            <ToastProvider>
+              {children}
+            </ToastProvider>
           </TenantAuthProvider>
         </LanguageProvider>
       </body>
